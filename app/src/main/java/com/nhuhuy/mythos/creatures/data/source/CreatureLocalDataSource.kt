@@ -7,7 +7,7 @@ import com.nhuhuy.mythos.creatures.domain.model.Creature
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-class LocalCreatureSource(
+class CreatureLocalDataSource(
     private val dao: CreatureDao,
     private val dispatcher: CoroutineDispatcher
 ) {

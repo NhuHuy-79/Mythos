@@ -1,4 +1,4 @@
-package com.nhuhuy.mythos.creatures.presentation.list.component
+package com.nhuhuy.mythos.creatures.presentation.home.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nhuhuy.mythos.core.utils.filterCategory
 import com.nhuhuy.mythos.creatures.domain.model.Creature
-import com.nhuhuy.mythos.creatures.presentation.list.PagerSection
+import com.nhuhuy.mythos.creatures.presentation.home.SuccessSection
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,7 +79,7 @@ fun TabScreen(
             modifier = Modifier.weight(1f)
         ) { pager ->
 
-            PagerSection(
+            SuccessSection(
                 modifier = Modifier.fillMaxSize(),
                 creatures = when (pager) {
                     0 -> all

@@ -1,4 +1,4 @@
-package com.nhuhuy.mythos.creatures.presentation.list.component
+package com.nhuhuy.mythos.creatures.presentation.home.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing

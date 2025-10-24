@@ -1,4 +1,4 @@
-package com.nhuhuy.mythos.creatures.presentation.list
+package com.nhuhuy.mythos.creatures.presentation.home
 
 import android.content.Intent
 import android.net.Uri
@@ -51,23 +51,22 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nhuhuy.mythos.R
 import com.nhuhuy.mythos.core.ui.component.ErrorSection
 import com.nhuhuy.mythos.core.ui.component.LoadingSection
-import com.nhuhuy.mythos.core.ui.component.ScreenState
 import com.nhuhuy.mythos.creatures.domain.model.Creature
-import com.nhuhuy.mythos.creatures.presentation.list.component.CreatureItem
-import com.nhuhuy.mythos.creatures.presentation.list.component.MythosBottomSheet
-import com.nhuhuy.mythos.creatures.presentation.list.component.MythosSearchBar
-import com.nhuhuy.mythos.creatures.presentation.list.component.TabScreen
+import com.nhuhuy.mythos.creatures.presentation.home.component.CreatureItem
+import com.nhuhuy.mythos.creatures.presentation.home.component.MythosBottomSheet
+import com.nhuhuy.mythos.creatures.presentation.home.component.MythosSearchBar
+import com.nhuhuy.mythos.creatures.presentation.home.component.NetworkStateHandler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListScreen(
+fun HomeScreen(
     modifier: Modifier,
-    onDetailClick: (Int) -> Unit,
-    onGoWiki: () -> Unit,
-    viewModel: ListViewModel,
+    onDetail: (Int) -> Unit,
+    onWiki: () -> Unit,
+    viewModel: HomeViewModel,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val creatures by viewModel.uiList.collectAsStateWithLifecycle()
+    val creatures by viewModel.uiState.collectAsStateWithLifecycle()
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -145,7 +144,7 @@ fun ListScreen(
                     onDismiss = { isShowBottomSheet = false },
                     onGoWiki = {
                         isShowBottomSheet = false
-                        onGoWiki()
+                        onWiki()
                     },
                     onAboutUs = {
                         Intent(
@@ -160,20 +159,31 @@ fun ListScreen(
                 )
             }
 
-            when (state.screenState) {
-                is ScreenState.Error -> ErrorSection(viewModel::onRetry)
-                ScreenState.Loading -> LoadingSection()
-                ScreenState.Success -> TabScreen(
-                    all = creatures,
-                    onDetailClick = onDetailClick
-                )
-            }
+            NetworkStateHandler(
+                modifier = Modifier.fillMaxSize(),
+                resource = state.result,
+                onLoading = {
+                    LoadingSection()
+                },
+                onSuccess = { creatures ->
+                    SuccessSection(
+                        modifier = Modifier.fillMaxSize(),
+                        creatures = creatures ,
+                        onDetailClick = onDetail,
+                    )
+                },
+                onFailure = {
+                    ErrorSection(
+                        onRetry = viewModel::onRetry
+                    )
+                }
+            )
         }
     }
 }
 
 @Composable
-fun PagerSection(
+fun SuccessSection(
     modifier: Modifier,
     creatures: List<Creature>,
     onDetailClick: (Int) -> Unit

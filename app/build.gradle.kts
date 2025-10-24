@@ -52,6 +52,7 @@ android {
     hilt {
         enableAggregatingTask = false
     }
+
 }
 
 dependencies {
@@ -72,30 +73,23 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
     //Hilt - Dagger
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
     //Room + Paging
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.paging)
-
     //Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
-
     //Coil
     implementation(libs.coil.compose)
-
     //Navigation - Serialize
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-
     //WebView
     implementation(libs.androidx.webkit)
-
 
 }

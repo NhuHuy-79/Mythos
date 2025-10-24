@@ -14,11 +14,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     private const val BASE_URL = "https://lovecraftapirest.fly.dev/api/"
-
+    private const val IO_TIME_OUT = 30L
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(IO_TIME_OUT, TimeUnit.SECONDS)
+        .writeTimeout(IO_TIME_OUT, TimeUnit.SECONDS)
         .build()
 
     @Provides

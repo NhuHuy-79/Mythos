@@ -2,8 +2,9 @@ package com.nhuhuy.mythos.creatures.di
 
 import com.nhuhuy.mythos.creatures.data.local.room.CreatureDao
 import com.nhuhuy.mythos.creatures.data.network.CreatureApi
-import com.nhuhuy.mythos.creatures.data.source.LocalCreatureSource
-import com.nhuhuy.mythos.creatures.data.source.RemoteCreatureSource
+import com.nhuhuy.mythos.creatures.data.repository.CreatureRepositoryImp
+import com.nhuhuy.mythos.creatures.data.source.CreatureLocalDataSource
+import com.nhuhuy.mythos.creatures.data.source.CreatureNetworkDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +23,15 @@ object CreatureModule {
 
     @Provides
     @Singleton
+    fun provideCreatureRepository(
+        localDataSource: CreatureLocalDataSource,
+        networkDataSource: CreatureNetworkDataSource
+    ): CreatureRepositoryImp {
+        return CreatureRepositoryImp(localDataSource, networkDataSource)
+    }
+
+    @Provides
+    @Singleton
     fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
@@ -29,12 +39,12 @@ object CreatureModule {
     fun provideRemoteDataSource(
         api: CreatureApi,
         dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ): RemoteCreatureSource = RemoteCreatureSource(api, dispatcher)
+    ): CreatureNetworkDataSource = CreatureNetworkDataSource(api, dispatcher)
 
     @Provides
     @Singleton
     fun provideLocalDataSource(
         dao: CreatureDao,
         dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ): LocalCreatureSource = LocalCreatureSource(dao, dispatcher)
+    ): CreatureLocalDataSource = CreatureLocalDataSource(dao, dispatcher)
 }

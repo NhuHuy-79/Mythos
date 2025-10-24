@@ -13,7 +13,6 @@ data class CreatureDTO(
     val id: Int,
     val img: List<String>,
     val name: String,
-
     @JsonAdapter(NicksAdapter::class)
     val nicks: List<String>?,
     val overview: String,

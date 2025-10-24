@@ -1,14 +1,14 @@
-package com.nhuhuy.mythos.creatures.presentation.list
+package com.nhuhuy.mythos.creatures.presentation.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nhuhuy.mythos.core.ui.component.ScreenState
-import com.nhuhuy.mythos.core.utils.Result
 import com.nhuhuy.mythos.core.utils.filterName
 import com.nhuhuy.mythos.creatures.domain.model.Creature
-import com.nhuhuy.mythos.creatures.domain.usecase.FetchCreatureList
-import com.nhuhuy.mythos.creatures.domain.usecase.ObserveDataSource
+import com.nhuhuy.mythos.creatures.domain.model.Resource
+import com.nhuhuy.mythos.creatures.domain.model.then
+import com.nhuhuy.mythos.creatures.domain.usecase.FetchCreaturesUseCase
+import com.nhuhuy.mythos.creatures.domain.usecase.ObserveCreaturesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +24,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ListViewModel @Inject constructor(
-    private val observeDataSource: ObserveDataSource,
-    private val fetchCreatureList: FetchCreatureList,
+class HomeViewModel @Inject constructor(
+    private val observeCreaturesUseCase: ObserveCreaturesUseCase,
+    private val fetchCreaturesUseCase: FetchCreaturesUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(ListState())
+    private val _state = MutableStateFlow(HomeUiState())
     val state = _state.asStateFlow()
 
     private val _searchQuery = MutableStateFlow("")
@@ -51,14 +51,18 @@ class ListViewModel @Inject constructor(
 
     fun onRetry(){
         viewModelScope.launch {
-            fetchCreatureList()
+            fetchCreaturesUseCase()
         }
     }
 
 
     @OptIn(FlowPreview::class)
-    val uiList: StateFlow<List<Creature>> = combine(state, searchQuery) { state, query ->
-        state.data.filterName(query)
+    val uiState: StateFlow<List<Creature>> = combine(state, searchQuery) { state, query ->
+        if (state.result is Resource.Success){
+            state.result.data.filterName(query)
+        } else {
+            emptyList()
+        }
     }
         .debounce(300)
         .distinctUntilChanged()
@@ -66,18 +70,9 @@ class ListViewModel @Inject constructor(
 
     private fun observeCreatureList() {
         viewModelScope.launch {
-            observeDataSource().collect { result ->
-                when (result) {
-                    is Result.Success -> _state.update {
-                        it.copy(
-                            data = result.data ?: emptyList(),
-                            screenState = ScreenState.Success
-                        )
-                    }
-
-                    is Result.Failure -> _state.update {
-                        it.copy(screenState = ScreenState.Error(exception = result.exception))
-                    }
+            observeCreaturesUseCase().collect { resource ->
+                _state.update {
+                    it.copy(result = resource)
                 }
             }
         }

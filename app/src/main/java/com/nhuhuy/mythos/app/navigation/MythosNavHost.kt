@@ -16,10 +16,11 @@ import androidx.navigation.compose.composable
 import com.nhuhuy.mythos.core.utils.capitalizeName
 import com.nhuhuy.mythos.creatures.presentation.detail.DetailScreen
 import com.nhuhuy.mythos.creatures.presentation.detail.DetailViewModel
-import com.nhuhuy.mythos.creatures.presentation.list.ListScreen
-import com.nhuhuy.mythos.creatures.presentation.list.ListViewModel
+import com.nhuhuy.mythos.creatures.presentation.home.HomeScreen
+import com.nhuhuy.mythos.creatures.presentation.home.HomeViewModel
 import com.nhuhuy.mythos.creatures.presentation.web.WebScreen
 
+const val ANIMATION_DURATION = 350
 
 @Composable
 fun MythosNavHost(
@@ -27,25 +28,31 @@ fun MythosNavHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Route.List
-    ) {
-        composable<Route.List>(
-            exitTransition = { fadeOut(tween(500, easing = LinearEasing)) },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(400, easing = LinearEasing)
-                )
-            }
+        startDestination = Route.List,
+        enterTransition = { fadeIn(tween(ANIMATION_DURATION, easing = FastOutSlowInEasing)) },
+        exitTransition = { fadeOut(tween(ANIMATION_DURATION, easing = LinearEasing)) },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(ANIMATION_DURATION, easing = LinearEasing)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(ANIMATION_DURATION, easing = LinearEasing)
+            )
+        },
         ) {
-            val listVM: ListViewModel = hiltViewModel()
-            ListScreen(
+        composable<Route.List>{
+            val listVM: HomeViewModel = hiltViewModel()
+            HomeScreen(
                 modifier = Modifier,
-                onDetailClick = { id ->
+                onDetail = { id ->
                     navHostController.navigate(Route.Detail(id))
                 },
                 viewModel = listVM,
-                onGoWiki = {
+                onWiki = {
                     navHostController.navigate(
                         Route.Wiki(
                             url = "https://lovecraft.fandom.com/wiki/Main_Page",
@@ -56,22 +63,7 @@ fun MythosNavHost(
             )
         }
 
-        composable<Route.Detail>(
-            enterTransition = { fadeIn(tween(500, easing = FastOutSlowInEasing)) },
-            popExitTransition = {
-              slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(400, easing = LinearEasing)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(400, easing = LinearEasing)
-                )
-            }
-
-        ) { entry ->
+        composable<Route.Detail> { entry ->
             val detailVM: DetailViewModel = hiltViewModel()
             DetailScreen(
                 id = entry.arguments?.getInt("id") ?: 0,
@@ -92,15 +84,7 @@ fun MythosNavHost(
             )
         }
 
-        composable<Route.Wiki>(
-            enterTransition = { fadeIn(tween(500, easing = FastOutSlowInEasing)) },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(400, easing = LinearEasing)
-                )
-            }
-        ){ entry ->
+        composable<Route.Wiki>{ entry ->
             WebScreen(
                 url = entry.arguments?.getString("url") ?: "",
                 name = entry.arguments?.getString("name")?.capitalizeName() ?: "",
