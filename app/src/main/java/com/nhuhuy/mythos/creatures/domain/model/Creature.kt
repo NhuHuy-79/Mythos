@@ -1,9 +1,7 @@
 package com.nhuhuy.mythos.creatures.domain.model
 
-import androidx.compose.runtime.Immutable
 
-@Immutable
-class Creature(
+data class Creature(
     val author: String,
     val canon: String,
     val category: String,
