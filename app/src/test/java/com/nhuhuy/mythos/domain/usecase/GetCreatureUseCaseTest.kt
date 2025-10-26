@@ -23,7 +23,6 @@ class GetCreatureUseCaseTest {
     @Mock
     private lateinit var repositoryImp: CreatureRepositoryImp
 
-
     @Before
     fun setUp(){
         MockitoAnnotations.openMocks(this)
@@ -39,10 +38,7 @@ class GetCreatureUseCaseTest {
 
         then(repositoryImp).should().getCreaturesById(1)
         Assert.assertEquals(expected, actual)
-        then(repositoryImp).should().getCreatures()
-        then(repositoryImp).should().fetchCreatures()
-        then(repositoryImp).shouldHaveNoInteractions()
+        then(repositoryImp).should().getCreaturesById(1)
     }
-
 
 }

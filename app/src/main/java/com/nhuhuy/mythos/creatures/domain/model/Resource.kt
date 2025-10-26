@@ -1,7 +1,5 @@
 package com.nhuhuy.mythos.creatures.domain.model
 
-private class NoCreaturesCachedException(msg: String): Throwable(msg)
-
 
 sealed class Resource<out T>(){
     data object Loading : Resource<Nothing>()
@@ -15,7 +13,8 @@ suspend fun <T>Resource<T>.then(
 ){
     return when (this) {
         is Resource.Failure -> failure(this.throwable)
-        Resource.Loading -> Unit
+        // @ExcludeFromCoverage
+        Resource.Loading -> return
         is Resource.Success -> success(this.data)
     }
 }

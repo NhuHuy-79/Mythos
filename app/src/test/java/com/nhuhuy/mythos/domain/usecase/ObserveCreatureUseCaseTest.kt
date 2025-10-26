@@ -31,6 +31,20 @@ class ObserveCreatureUseCaseTest {
     }
 
     @Test
+    fun `observe creatures WHEN fetch creatures from network THEN Resource Failure`() = runTest {
+        val expected = Resource.Failure(Exception())
+        given(repositoryImp.getCreatures()).willReturn(expected)
+        given(repositoryImp.fetchCreatures()).willReturn(expected)
+
+        val actual = useCaseTest().toList()
+        val expectedResources = listOf(Resource.Loading, expected)
+
+        Assert.assertEquals(expectedResources, actual)
+        then(repositoryImp).should().getCreatures()
+        then(repositoryImp).should().fetchCreatures()
+    }
+
+    @Test
     fun `observe creatures WHEN fetch creatures from network THEN Resource Success`() = runTest {
         val expected = Resource.Success(fakeCreatures)
         val exception = Resource.Failure(Exception())
@@ -49,6 +63,17 @@ class ObserveCreatureUseCaseTest {
     fun `observe creatures WHEN get creatures from local THEN Resource Success`() = runTest {
         val expected = Resource.Success(fakeCreatures)
         given(repositoryImp.getCreatures()).willReturn(expected)
+        val actual = useCaseTest().toList()
+        val expectedResources = listOf(Resource.Loading, expected)
+        Assert.assertEquals(expectedResources, actual)
+        then(repositoryImp).should().getCreatures()
+    }
+
+    @Test
+    fun `observe creatures WHEN get creatures from local THEN Resource Failure`() = runTest {
+        val expected = Resource.Failure(Exception())
+        given(repositoryImp.getCreatures()).willReturn(expected)
+        given(repositoryImp.fetchCreatures()).willReturn(expected)
         val actual = useCaseTest().toList()
         val expectedResources = listOf(Resource.Loading, expected)
         Assert.assertEquals(expectedResources, actual)
