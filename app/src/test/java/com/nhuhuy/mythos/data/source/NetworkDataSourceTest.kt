@@ -3,7 +3,7 @@ package com.nhuhuy.mythos.data.source
 import com.google.common.truth.Truth
 import com.nhuhuy.mythos.creatures.data.network.CreatureApi
 import com.nhuhuy.mythos.creatures.data.network.CreatureDTO
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreatures
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreatures
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

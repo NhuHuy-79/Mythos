@@ -5,7 +5,7 @@ import com.nhuhuy.mythos.creatures.domain.model.Creature
 import com.nhuhuy.mythos.creatures.domain.model.Resource
 import com.nhuhuy.mythos.creatures.domain.repository.CreatureRepository
 import com.nhuhuy.mythos.creatures.domain.usecase.GetCreatureUseCase
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreature
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreature
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -44,9 +44,5 @@ class GetCreatureUseCaseTest {
         then(repositoryImp).shouldHaveNoInteractions()
     }
 
-    @Test
-    fun `get creatures give a resource THEN Resource Failed`() = runTest {
-
-    }
 
 }

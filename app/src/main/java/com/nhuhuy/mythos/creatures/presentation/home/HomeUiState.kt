@@ -1,7 +1,6 @@
 package com.nhuhuy.mythos.creatures.presentation.home
 
 import androidx.compose.runtime.Stable
-import com.nhuhuy.mythos.core.ui.component.ScreenState
 import com.nhuhuy.mythos.creatures.domain.model.Creature
 import com.nhuhuy.mythos.creatures.domain.model.Resource
 

@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,6 +72,10 @@ fun HomeScreen(
     val focusManager = LocalFocusManager.current
     var isShowBottomSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.observeCreatureList()
+    }
 
     Log.d("List Screen", "$state")
     Scaffold(
@@ -232,7 +237,6 @@ fun SuccessSection(
                     )
                 }
             }
-
         }
     }
 

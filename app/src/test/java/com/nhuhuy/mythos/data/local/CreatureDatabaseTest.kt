@@ -10,7 +10,7 @@ import com.nhuhuy.mythos.creatures.data.local.room.CreatureDatabase
 import com.nhuhuy.mythos.creatures.data.mapper.toEntity
 import com.nhuhuy.mythos.creatures.data.mapper.toModel
 import com.nhuhuy.mythos.creatures.domain.model.Creature
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreatures
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreatures
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before

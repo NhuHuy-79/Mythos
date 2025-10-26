@@ -5,8 +5,8 @@ import com.nhuhuy.mythos.creatures.data.local.room.CreatureDao
 import com.nhuhuy.mythos.creatures.data.local.room.CreatureEntity
 import com.nhuhuy.mythos.creatures.data.mapper.toEntity
 import com.nhuhuy.mythos.creatures.domain.model.Creature
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreature
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreatures
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreature
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreatures
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

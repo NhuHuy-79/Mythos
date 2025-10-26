@@ -4,11 +4,11 @@ import com.nhuhuy.mythos.core.utils.capitalizeName
 import com.nhuhuy.mythos.core.utils.filterCategory
 import com.nhuhuy.mythos.core.utils.filterName
 import com.nhuhuy.mythos.creatures.domain.model.Creature
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreatures
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreatures
 import org.junit.Assert
 import org.junit.Test
 
-class UtilsTest {
+class ExtensionsTest {
 
     private val fakeString = "nhu huy"
 

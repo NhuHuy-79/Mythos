@@ -32,16 +32,11 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeUiState())
     val state = _state.asStateFlow()
 
-    init {
-        observeCreatureList()
-    }
-
     fun updateSearchQuery(query: String) {
        _state.update {
            it.copy(query = query)
        }
     }
-
     fun changeSearchStatus(value: Boolean) {
         _state.update {
             it.copy(isSearching = value)
@@ -54,7 +49,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun observeCreatureList() {
+
+     fun observeCreatureList() {
         viewModelScope.launch {
             observeCreaturesUseCase().collect { resource ->
                 _state.update {

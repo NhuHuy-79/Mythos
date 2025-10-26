@@ -1,4 +1,4 @@
-package com.nhuhuy.mythos.domain.repository
+package com.nhuhuy.mythos.data.repository
 
 import com.google.common.truth.Truth
 import com.nhuhuy.mythos.creatures.data.mapper.toEntity
@@ -9,8 +9,7 @@ import com.nhuhuy.mythos.creatures.data.source.CreatureLocalDataSource
 import com.nhuhuy.mythos.creatures.data.source.CreatureNetworkDataSource
 import com.nhuhuy.mythos.creatures.domain.model.Creature
 import com.nhuhuy.mythos.creatures.domain.model.Resource
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreature
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreatures
+import com.nhuhuy.mythos.domain.FakeData
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +20,7 @@ import org.mockito.kotlin.given
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class CreatureRepositoryTest {
+class CreatureRepositoryImpTest {
     @Mock
     private lateinit var fakeLocalDataSource: CreatureLocalDataSource
 
@@ -50,8 +49,8 @@ class CreatureRepositoryTest {
     //Test getCreatureById
     @Test
     fun `get creatures by id THEN return creature`() = runTest {
-        val expected = fakeCreature
-        given(fakeLocalDataSource.getCreatureById(1)).willReturn(fakeCreature.toEntity())
+        val expected = FakeData.Companion.fakeCreature
+        given(fakeLocalDataSource.getCreatureById(1)).willReturn(FakeData.Companion.fakeCreature.toEntity())
 
         val actual = fakeRepository.getCreaturesById(1)
 
@@ -61,7 +60,7 @@ class CreatureRepositoryTest {
     //Test  getCreatures
     @Test
     fun `get all creatures THEN return list of creatures`() = runTest {
-        val expectedEntities = fakeCreatures.map {
+        val expectedEntities = FakeData.Companion.fakeCreatures.map {
             it.toEntity()
         }
         val expectedList = expectedEntities.map { it.toModel() }

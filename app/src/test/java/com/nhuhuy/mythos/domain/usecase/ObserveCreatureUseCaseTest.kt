@@ -3,7 +3,7 @@ package com.nhuhuy.mythos.domain.usecase
 import com.nhuhuy.mythos.creatures.data.repository.CreatureRepositoryImp
 import com.nhuhuy.mythos.creatures.domain.model.Resource
 import com.nhuhuy.mythos.creatures.domain.usecase.ObserveCreaturesUseCase
-import com.nhuhuy.mythos.data.FakeData.Companion.fakeCreatures
+import com.nhuhuy.mythos.domain.FakeData.Companion.fakeCreatures
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
