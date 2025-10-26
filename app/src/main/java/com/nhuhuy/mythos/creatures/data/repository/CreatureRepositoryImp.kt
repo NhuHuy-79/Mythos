@@ -55,5 +55,4 @@ class CreatureRepositoryImp @Inject constructor(
     override suspend fun saveCreatures(creatures: List<Creature>) {
         localDataSource.insertAll(creatures)
     }
-
 }
