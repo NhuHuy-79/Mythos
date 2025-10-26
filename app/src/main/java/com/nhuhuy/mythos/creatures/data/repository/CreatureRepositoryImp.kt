@@ -22,7 +22,7 @@ class CreatureRepositoryImp @Inject constructor(
             val response = networkDataSource.fetchCreatureList().map { dTO -> dTO.toModel() }
             Resource.Success(response)
         } catch (e: Exception){
-            LogUtils.exception(e)
+            /*LogUtils.exception(e)*/
             Resource.Failure(e)
         }
     }

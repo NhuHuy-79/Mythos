@@ -17,12 +17,6 @@ class CreatureLocalDataSource(
         }
     }
 
-    suspend fun getAllWithFilter(query: String): List<CreatureEntity> {
-        return withContext(dispatcher) {
-            dao.getAllWithFilter(query)
-        }
-    }
-
     suspend fun insertAll(creatures: List<Creature>) {
         withContext(dispatcher) {
             val entities = creatures.map {
