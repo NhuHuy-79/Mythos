@@ -32,15 +32,14 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeUiState())
     val state = _state.asStateFlow()
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
-
     init {
         observeCreatureList()
     }
 
     fun updateSearchQuery(query: String) {
-        _searchQuery.value = query
+       _state.update {
+           it.copy(query = query)
+       }
     }
 
     fun changeSearchStatus(value: Boolean) {
@@ -55,19 +54,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
-    @OptIn(FlowPreview::class)
-    val uiState: StateFlow<List<Creature>> = combine(state, searchQuery) { state, query ->
-        if (state.result is Resource.Success){
-            state.result.data.filterName(query)
-        } else {
-            emptyList()
-        }
-    }
-        .debounce(300)
-        .distinctUntilChanged()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
     private fun observeCreatureList() {
         viewModelScope.launch {
             observeCreaturesUseCase().collect { resource ->
@@ -80,7 +66,6 @@ class HomeViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        _searchQuery.value = ""
         Log.d("ViewModel Status", "isClear")
     }
 }

@@ -5,6 +5,7 @@ import com.nhuhuy.mythos.creatures.data.network.CreatureApi
 import com.nhuhuy.mythos.creatures.data.repository.CreatureRepositoryImp
 import com.nhuhuy.mythos.creatures.data.source.CreatureLocalDataSource
 import com.nhuhuy.mythos.creatures.data.source.CreatureNetworkDataSource
+import com.nhuhuy.mythos.creatures.domain.repository.CreatureRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +27,7 @@ object CreatureModule {
     fun provideCreatureRepository(
         localDataSource: CreatureLocalDataSource,
         networkDataSource: CreatureNetworkDataSource
-    ): CreatureRepositoryImp {
+    ): CreatureRepository {
         return CreatureRepositoryImp(localDataSource, networkDataSource)
     }
 

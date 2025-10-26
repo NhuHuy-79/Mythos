@@ -56,6 +56,7 @@ import com.nhuhuy.mythos.creatures.presentation.home.component.CreatureItem
 import com.nhuhuy.mythos.creatures.presentation.home.component.MythosBottomSheet
 import com.nhuhuy.mythos.creatures.presentation.home.component.MythosSearchBar
 import com.nhuhuy.mythos.creatures.presentation.home.component.NetworkStateHandler
+import com.nhuhuy.mythos.creatures.presentation.home.component.TabScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,8 +67,6 @@ fun HomeScreen(
     viewModel: HomeViewModel,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val creatures by viewModel.uiState.collectAsStateWithLifecycle()
-    val query by viewModel.searchQuery.collectAsStateWithLifecycle()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var isShowBottomSheet by remember { mutableStateOf(false) }
@@ -100,7 +99,7 @@ fun HomeScreen(
                         },
                         visible = state.isSearching,
                         modifier = Modifier,
-                        query = query,
+                        query = state.query,
                         onSearch = viewModel::updateSearchQuery,
                         focusRequester = focusRequester
                     )
@@ -166,10 +165,10 @@ fun HomeScreen(
                     LoadingSection()
                 },
                 onSuccess = { creatures ->
-                    SuccessSection(
-                        modifier = Modifier.fillMaxSize(),
-                        creatures = creatures ,
-                        onDetailClick = onDetail,
+                    TabScreen(
+                        query = state.query,
+                        all = creatures,
+                        onDetailClick = onDetail
                     )
                 },
                 onFailure = {
@@ -184,41 +183,18 @@ fun HomeScreen(
 
 @Composable
 fun SuccessSection(
-    modifier: Modifier,
     creatures: List<Creature>,
     onDetailClick: (Int) -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (creatures.isEmpty()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_book),
-                    contentDescription = "empty",
-                    tint = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.size(64.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = "No creature found!",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
-        }
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        if (!creatures.isEmpty()) {
             items(creatures, key = { it.id }) { item ->
                 CreatureItem(
                     creature = item,
@@ -234,7 +210,31 @@ fun SuccessSection(
                         .animateItem()
                 )
             }
+        } else {
+
+            item {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_book),
+                        contentDescription = "empty",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(64.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "No creature found!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+
         }
     }
+
 }
 

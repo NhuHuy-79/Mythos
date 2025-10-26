@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Route {
     @Serializable
-    data object List : Route()
+    data object Home : Route()
 
     @Serializable
     data class Detail(val id: Int) : Route()

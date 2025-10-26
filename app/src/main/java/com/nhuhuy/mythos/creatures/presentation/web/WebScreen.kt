@@ -97,7 +97,7 @@ fun WebScreen(
                 title = {
                     Text(
                         text = name,
-                        style = MaterialTheme.typography.headlineMedium,
+
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),

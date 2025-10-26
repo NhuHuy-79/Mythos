@@ -13,6 +13,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nhuhuy.mythos.core.utils.filterCategory
+import com.nhuhuy.mythos.core.utils.filterName
 import com.nhuhuy.mythos.creatures.domain.model.Creature
 import com.nhuhuy.mythos.creatures.presentation.home.SuccessSection
 import kotlinx.coroutines.launch
@@ -27,18 +29,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun TabScreen(
     all: List<Creature>,
+    query: String,
     onDetailClick: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { CategoryTab.entries.size })
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
     val categories = remember { CategoryTab.entries }
-
-    val outerGods = all.filterCategory("outer god")
-    val greatOldOnes = all.filterCategory("great old one")
-    val lessOldOnes = all.filterCategory("lesser old one")
-
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -78,19 +75,21 @@ fun TabScreen(
             state = pagerState,
             modifier = Modifier.weight(1f)
         ) { pager ->
-
+            val list by remember(all, query, pager) {
+                derivedStateOf {
+                    when (pager) {
+                        0 -> all
+                        1 -> all.filterCategory("outer god")
+                        2 -> all.filterCategory("great old one")
+                        3 -> all.filterCategory("lesser old one")
+                        else -> emptyList()
+                    }.filterName(query)
+                }
+            }
             SuccessSection(
-                modifier = Modifier.fillMaxSize(),
-                creatures = when (pager) {
-                    0 -> all
-                    1 -> outerGods
-                    2 -> greatOldOnes
-                    3 -> lessOldOnes
-                    else -> emptyList()
-                },
+                creatures = list,
                 onDetailClick = onDetailClick
             )
-
         }
     }
 }

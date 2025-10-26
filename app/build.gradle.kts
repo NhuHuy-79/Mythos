@@ -91,5 +91,4 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     //WebView
     implementation(libs.androidx.webkit)
-
 }

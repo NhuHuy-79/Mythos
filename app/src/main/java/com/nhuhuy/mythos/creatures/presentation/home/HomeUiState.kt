@@ -10,5 +10,6 @@ data class HomeUiState(
     val result : Resource<List<Creature>> = Resource.Loading,
     val isSearching: Boolean = false,
     val isImageZoom: Boolean = false,
+    val query: String = ""
 )
 

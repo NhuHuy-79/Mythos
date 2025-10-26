@@ -2,6 +2,7 @@ package com.nhuhuy.mythos.creatures.presentation.home.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.nhuhuy.mythos.creatures.domain.model.Resource
 
@@ -14,8 +15,8 @@ fun <T>NetworkStateHandler(
     onLoading: @Composable () -> Unit,
 ){
     AnimatedContent(
-        modifier = modifier,
-        targetState = resource
+        targetState = resource,
+        contentAlignment = Alignment.Center
     ) { resource ->
         when (resource) {
             is Resource.Failure -> onFailure()

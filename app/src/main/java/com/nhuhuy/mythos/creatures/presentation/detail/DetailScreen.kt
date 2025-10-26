@@ -3,10 +3,8 @@ package com.nhuhuy.mythos.creatures.presentation.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,9 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.nhuhuy.mythos.core.ui.component.ErrorSection
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nhuhuy.mythos.core.ui.component.LoadingSection
-import com.nhuhuy.mythos.core.ui.component.ScreenState
 import com.nhuhuy.mythos.core.utils.capitalizeName
 import com.nhuhuy.mythos.creatures.domain.model.Creature
 import com.nhuhuy.mythos.creatures.presentation.detail.component.DetailContent
@@ -42,38 +40,42 @@ import com.nhuhuy.mythos.creatures.presentation.detail.component.DetailOtherName
 import com.nhuhuy.mythos.creatures.presentation.detail.component.DetailTag
 import com.nhuhuy.mythos.creatures.presentation.detail.component.ImageContainerDialog
 import com.nhuhuy.mythos.creatures.presentation.detail.component.MythosDialog
+import com.nhuhuy.mythos.creatures.presentation.home.component.NetworkStateHandler
 
 @Composable
 fun DetailScreen(
     id: Int,
-    modifier: Modifier,
     viewModel: DetailViewModel,
     onMoreClick: (String, String) -> Unit,
-    onCategorySearch: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    viewModel.provideDetail(id)
-    val state by viewModel.state
-
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.getCreatureDetailById(id)
+    }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (state.screenState) {
-            is ScreenState.Error -> ErrorSection {
-                viewModel.provideDetail(id)
-            }
+        NetworkStateHandler(
+            modifier = Modifier,
+            resource = uiState.resource,
+            onSuccess = { creature ->
+                SuccessDetailSection(
+                    onNavigateBack = onNavigateBack,
+                    onMoreClick = onMoreClick,
+                    creature = creature,
+                    onImageChoose = viewModel::updateImageState,
+                    imgUrl = uiState.imgUrl
+                )
+            },
+            onFailure = {
 
-            ScreenState.Loading -> LoadingSection()
-            ScreenState.Success -> SuccessDetailSection(
-                onNavigateBack = onNavigateBack,
-                onMoreClick = onMoreClick,
-                creature = state.creature,
-                onCategorySearch,
-                state = state,
-                onImageChoose = viewModel::updateImageState
-            )
-        }
+            },
+            onLoading = {
+                LoadingSection()
+            },
+        )
     }
 
 }
@@ -83,14 +85,13 @@ fun DetailScreen(
 fun SuccessDetailSection(
     onNavigateBack: () -> Unit,
     onMoreClick: (String, String) -> Unit,
-    creature: Creature?,
-    onCategorySearch: () -> Unit,
+    creature: Creature,
     onImageChoose: (String) -> Unit,
-    state: DetailState
+    imgUrl: String,
 ) {
     var isDialogOpen by remember { mutableStateOf(false) }
     var isShowImage by remember { mutableStateOf(false) }
-    val defaultText = "Undefined"
+    "Undefined"
     val scrollState = rememberScrollState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -98,7 +99,7 @@ fun SuccessDetailSection(
             TopAppBar(
                 title = {
                     Text(
-                        text = creature?.name?.capitalizeName() ?: defaultText,
+                        text = creature.name.capitalizeName(),
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
@@ -139,18 +140,17 @@ fun SuccessDetailSection(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValue)
                     .padding(horizontal = 16.dp)
                     .verticalScroll(scrollState),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                creature?.let {
+                creature.let {
                     DetailImageSlider(
                         modifier = Modifier.fillMaxWidth(),
                         images = creature.img,
@@ -160,20 +160,17 @@ fun SuccessDetailSection(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     DetailTag(
                         appearance = creature.category,
                         author = creature.author
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     DetailOtherName(
                         others = creature.nicks.map { it.capitalizeName() }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     DetailContent(
                         name = creature.nicks.firstOrNull()?.capitalizeName()
@@ -187,7 +184,7 @@ fun SuccessDetailSection(
             if (isShowImage) {
                 ImageContainerDialog(
                     onDismiss = { isShowImage = false },
-                    key = state.image
+                    key = imgUrl
                 )
             }
 
@@ -195,7 +192,7 @@ fun SuccessDetailSection(
                 MythosDialog(
                     onDismiss = { isDialogOpen = false },
                     onConfirm = {
-                        onMoreClick(creature?.wikiUrl ?: "", creature?.name ?: "")
+                        onMoreClick(creature.wikiUrl, creature.name)
                         isDialogOpen = false
                     }
                 )

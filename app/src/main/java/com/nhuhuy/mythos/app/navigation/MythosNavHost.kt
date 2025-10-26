@@ -28,7 +28,7 @@ fun MythosNavHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Route.List,
+        startDestination = Route.Home,
         enterTransition = { fadeIn(tween(ANIMATION_DURATION, easing = FastOutSlowInEasing)) },
         exitTransition = { fadeOut(tween(ANIMATION_DURATION, easing = LinearEasing)) },
         popEnterTransition = {
@@ -44,14 +44,14 @@ fun MythosNavHost(
             )
         },
         ) {
-        composable<Route.List>{
-            val listVM: HomeViewModel = hiltViewModel()
+        composable<Route.Home>{
+            val homeViewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 modifier = Modifier,
                 onDetail = { id ->
                     navHostController.navigate(Route.Detail(id))
                 },
-                viewModel = listVM,
+                viewModel = homeViewModel,
                 onWiki = {
                     navHostController.navigate(
                         Route.Wiki(
@@ -64,11 +64,10 @@ fun MythosNavHost(
         }
 
         composable<Route.Detail> { entry ->
-            val detailVM: DetailViewModel = hiltViewModel()
+            val detailViewModel: DetailViewModel = hiltViewModel()
             DetailScreen(
-                id = entry.arguments?.getInt("id") ?: 0,
-                modifier = Modifier,
-                viewModel = detailVM,
+                id = entry.arguments?.getInt("id") ?: 1,
+                viewModel = detailViewModel,
                 onMoreClick = { url, name ->
                     navHostController.navigate(
                         Route.Wiki(
@@ -77,7 +76,6 @@ fun MythosNavHost(
                         )
                     )
                 },
-                onCategorySearch = {},
                 onNavigateBack = {
                     navHostController.popBackStack()
                 }

@@ -3,30 +3,34 @@ package com.nhuhuy.mythos.creatures.presentation.detail
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nhuhuy.mythos.core.ui.component.ScreenState
-import com.nhuhuy.mythos.creatures.domain.usecase.GetCreatureById
+import com.nhuhuy.mythos.creatures.domain.usecase.GetCreatureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getCreatureById: GetCreatureById
+    private val getCreatureById: GetCreatureUseCase
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(DetailState())
-    val state get() = _state
+    private val _state = MutableStateFlow(DetailUiState())
+    val state = _state.asStateFlow()
 
     fun updateImageState(key: String) {
-        _state.value = _state.value.copy(
-            image = key
-        )
+       _state.update {
+           it.copy(imgUrl = key)
+       }
     }
 
-    fun provideDetail(id: Int) {
+    fun getCreatureDetailById(id: Int) {
         viewModelScope.launch {
-            val creature = getCreatureById(id)
-            _state.value = _state.value.copy(creature = creature, screenState = ScreenState.Success)
+            val resource = getCreatureById(id)
+            _state.update {
+                it.copy(resource = resource)
+            }
         }
     }
 }

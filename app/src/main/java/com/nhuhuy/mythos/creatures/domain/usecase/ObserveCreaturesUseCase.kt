@@ -1,6 +1,7 @@
 package com.nhuhuy.mythos.creatures.domain.usecase
 
 import com.nhuhuy.mythos.core.utils.LogUtils
+import com.nhuhuy.mythos.creatures.data.mapper.toEntity
 import com.nhuhuy.mythos.creatures.domain.model.Resource
 import com.nhuhuy.mythos.creatures.domain.model.then
 import com.nhuhuy.mythos.creatures.domain.repository.CreatureRepository
@@ -12,19 +13,23 @@ class ObserveCreaturesUseCase @Inject constructor(
 ) {
     operator fun invoke() = flow {
         emit(Resource.Loading)
-        val creatures = creatureRepository.getCreatures()
-        if (creatures.isEmpty()){
-            val result = creatureRepository.fetchCreatures()
-            result.then(
-                failure = { throwable ->
-                    LogUtils.exception(throwable)
-                },
-                success = { creatures ->
-                    emit(Resource.Success(creatures))
-                }
-            )
-        } else {
-            emit(Resource.Success(creatures))
+        val resource = creatureRepository.getCreatures()
+        when (resource) {
+            is Resource.Failure -> {
+                val response = creatureRepository.fetchCreatures()
+                response.then(
+                    failure = { throwable ->
+                        LogUtils.exception(throwable)
+                        emit(resource)
+                    },
+                    success = { creatures ->
+                        creatureRepository.saveCreatures(creatures)
+                        emit(Resource.Success(creatures))
+                    }
+                )
+            }
+            Resource.Loading -> emit(resource)
+            is Resource.Success -> emit(resource)
         }
     }
 }
