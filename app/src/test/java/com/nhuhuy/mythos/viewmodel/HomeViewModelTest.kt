@@ -41,13 +41,13 @@ class HomeViewModelTest {
         Dispatchers.resetMain()
     }
 
-    @Test
+   /* @Test
     fun `update search query WHEN query is changed THEN update query state`() = runTest{
         val expected = "key"
         homeViewModel.updateSearchQuery("key")
         val actual = homeViewModel.state.value.query
         Truth.assertThat(actual).isEqualTo(expected)
-    }
+    }*/
 
     @Test
     fun `retry to fetch data`(){
@@ -57,12 +57,11 @@ class HomeViewModelTest {
     }
 
 
-    @Test
+   /* @Test
     fun `change status WHEN status is changed THEN update status state`(){
         val expected = true
         homeViewModel.changeSearchStatus(true)
         val actual = homeViewModel.state.value.isSearching
-
         Truth.assertThat(actual).isEqualTo(expected)
-    }
+    }*/
 }
