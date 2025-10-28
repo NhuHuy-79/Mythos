@@ -4,6 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,15 +78,22 @@ fun HomeScreen(
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.navigationBars),
         topBar = {
-            AnimatedContent(state.isSearching) { isSearching ->
-                if (isSearching){
+            AnimatedContent(
+                targetState = state.isSearching,
+                transitionSpec = { fadeIn(
+                    tween(300, easing = LinearEasing)
+                ) togetherWith fadeOut(
+                    tween(300, easing = EaseOut)
+                ) }
+            ) { isSearching ->
+                if (isSearching) {
                     MythosSearchBar(
                         onSearchCancel = {
                             viewModel.changeSearchStatus(false)
                             focusManager.clearFocus()
                         },
                         focusRequester = focusRequester,
-                        query = state.query ,
+                        query = state.query,
                         onSearch = viewModel::updateSearchQuery
                     )
                 } else {
@@ -155,44 +168,20 @@ fun SuccessSection(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!creatures.isEmpty()) {
-            items(creatures, key = { it.id }) { item ->
-                CreatureItem(
-                    creature = item,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                        .clickable {
-                            onDetailClick(item.id)
-                        }
-                        .animateItem()
-                )
-            }
-        } else {
-
-            item {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_book),
-                        contentDescription = "empty",
-                        tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(64.dp)
+        items(creatures, key = { it.id }) { item ->
+            CreatureItem(
+                creature = item,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = "No creature found!",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
-                }
-            }
+                    .clickable {
+                        onDetailClick(item.id)
+                    }
+                    .animateItem()
+            )
         }
     }
 }

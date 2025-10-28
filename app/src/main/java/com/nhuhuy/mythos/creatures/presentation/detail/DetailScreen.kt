@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nhuhuy.mythos.core.ui.component.LoadingSection
 import com.nhuhuy.mythos.core.utils.capitalizeName
@@ -97,12 +100,13 @@ fun SuccessDetailSection(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
+                    BasicText(
                         text = creature.name.capitalizeName(),
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis
+                        style = MaterialTheme.typography.titleMedium,
+                        autoSize = TextAutoSize.StepBased(
+                            minFontSize = 14.sp,
+                            maxFontSize = 20.sp
+                        )
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),

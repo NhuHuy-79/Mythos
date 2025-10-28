@@ -9,6 +9,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +41,7 @@ fun TabScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScrollableTabRow(
+        SecondaryScrollableTabRow(
             selectedTabIndex = selectedTabIndex.value,
             modifier = Modifier.fillMaxWidth(),
             edgePadding = 0.dp,
@@ -86,10 +87,14 @@ fun TabScreen(
                     }.filterName(query)
                 }
             }
-            SuccessSection(
-                creatures = list,
-                onDetailClick = onDetailClick
-            )
+            if (list.isEmpty()){
+                EmptyList()
+            } else {
+                SuccessSection(
+                    creatures = list,
+                    onDetailClick = onDetailClick
+                )
+            }
         }
     }
 }

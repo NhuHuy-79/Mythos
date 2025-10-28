@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.nhuhuy.mythos.R
 import com.nhuhuy.mythos.core.ui.component.LoadingSection
+import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -145,10 +147,16 @@ fun DetailImageSlider(
                         modifier = Modifier
                             .size(350.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer),
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .shimmer(),
                         contentAlignment = Alignment.Center
                     ) {
-                        LoadingSection()
+                        Icon(
+                            imageVector = Icons.Rounded.Image,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(56.dp)
+                        )
                     }
                 }
 

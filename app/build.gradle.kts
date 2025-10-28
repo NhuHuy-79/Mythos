@@ -61,7 +61,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -97,6 +96,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     //WebView
     implementation(libs.androidx.webkit)
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    //Shimmer Effect
+    implementation(libs.compose.shimmer)
     //Unit Test
     testImplementation(libs.truth)
     testImplementation(libs.robolectric)
@@ -104,7 +106,6 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.core)
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 }
