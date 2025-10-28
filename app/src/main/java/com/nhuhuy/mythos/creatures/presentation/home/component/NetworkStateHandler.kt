@@ -3,12 +3,10 @@ package com.nhuhuy.mythos.creatures.presentation.home.component
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import com.nhuhuy.mythos.creatures.domain.model.Resource
 
 @Composable
 fun <T>NetworkStateHandler(
-    modifier: Modifier,
     resource: Resource<T>,
     onSuccess: @Composable (T) -> Unit,
     onFailure: @Composable () -> Unit,

@@ -3,6 +3,7 @@ package com.nhuhuy.mythos.creatures.presentation.home
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,24 +17,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +38,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,6 +46,7 @@ import com.nhuhuy.mythos.core.ui.component.ErrorSection
 import com.nhuhuy.mythos.core.ui.component.LoadingSection
 import com.nhuhuy.mythos.creatures.domain.model.Creature
 import com.nhuhuy.mythos.creatures.presentation.home.component.CreatureItem
+import com.nhuhuy.mythos.creatures.presentation.home.component.DefaultTopBar
 import com.nhuhuy.mythos.creatures.presentation.home.component.MythosBottomSheet
 import com.nhuhuy.mythos.creatures.presentation.home.component.MythosSearchBar
 import com.nhuhuy.mythos.creatures.presentation.home.component.NetworkStateHandler
@@ -73,66 +66,30 @@ fun HomeScreen(
     var isShowBottomSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.observeCreatureList()
-    }
-
     Log.d("List Screen", "$state")
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.navigationBars),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                actions = {
+            AnimatedContent(state.isSearching) { isSearching ->
+                if (isSearching){
                     MythosSearchBar(
                         onSearchCancel = {
-                            viewModel.updateSearchQuery("")
                             viewModel.changeSearchStatus(false)
                             focusManager.clearFocus()
                         },
-                        visible = state.isSearching,
-                        modifier = Modifier,
-                        query = state.query,
-                        onSearch = viewModel::updateSearchQuery,
-                        focusRequester = focusRequester
+                        focusRequester = focusRequester,
+                        query = state.query ,
+                        onSearch = viewModel::updateSearchQuery
                     )
-
-                    IconButton(
-                        onClick = { viewModel.changeSearchStatus(true) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Search,
-                            contentDescription = "search",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(24.dp))
-
-                    IconButton(
-                        onClick = { isShowBottomSheet = true }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.MoreVert,
-                            contentDescription = "more",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                },
-            )
+                } else {
+                    DefaultTopBar(
+                        showBottomSheet = { isShowBottomSheet = true },
+                        onSearchClick = { viewModel.changeSearchStatus(true) }
+                    )
+                }
+            }
         },
     )
     { paddingValues ->
@@ -164,7 +121,6 @@ fun HomeScreen(
             }
 
             NetworkStateHandler(
-                modifier = Modifier.fillMaxSize(),
                 resource = state.result,
                 onLoading = {
                     LoadingSection()
@@ -239,6 +195,5 @@ fun SuccessSection(
             }
         }
     }
-
 }
 

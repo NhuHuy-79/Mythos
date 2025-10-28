@@ -58,7 +58,6 @@ fun DetailScreen(
         contentAlignment = Alignment.Center
     ) {
         NetworkStateHandler(
-            modifier = Modifier,
             resource = uiState.resource,
             onSuccess = { creature ->
                 SuccessDetailSection(
